@@ -1,0 +1,28 @@
+import React from 'react'
+import { Search, ArrowRight, Plus, MapPin, ShoppingBag, MessageCircle, ShieldCheck, BrainCircuit } from 'lucide-react'
+
+const categories = [
+  ['🌾','Wheat'],['🍚','Rice'],['🍅','Tomato'],['🥔','Potato'],['🧅','Onion'],['🌼','Mustard']
+]
+
+export default function Home({ role, listings, setPage, openProduct }) {
+  const [q,setQ]=React.useState('')
+  const isFarmer=role==='farmer'
+  const featured=listings.slice(0,4)
+  const search=()=>{ setPage('marketplace'); localStorage.setItem('kisan-search',q) }
+  return <div>
+    <section className="bg-gradient-to-br from-[#ecf6e9] via-[#f7fbf5] to-[#fff7e7]">
+      <div className="mx-auto grid max-w-7xl items-center gap-8 px-3 py-8 sm:px-5 sm:py-12 lg:grid-cols-[1.05fr_.95fr] lg:px-8 lg:py-16">
+        <div><span className="inline-flex rounded-full bg-white px-3 py-1.5 text-xs font-black text-[#2f6f3e] shadow-sm">Simple crop marketplace</span><h1 className="mt-5 max-w-2xl text-3xl font-black leading-[1.06] tracking-[-.04em] sm:text-5xl lg:text-6xl">{isFarmer?'Sell your crop directly to buyers.':'Fresh crops. Bulk quantities. Direct from farmers.'}</h1><p className="mt-5 max-w-xl text-base leading-7 text-black/55">{isFarmer?'Upload your produce in a few steps, receive orders and chat only when you want to negotiate the price.':'Search what you need, compare sellers and place an order. If the price needs discussion, chat directly with the farmer.'}</p>
+        {!isFarmer&&<div className="mt-7 flex max-w-xl flex-col gap-2 rounded-2xl border border-black/10 bg-white p-2 shadow-sm min-[430px]:flex-row min-[430px]:items-center"><Search className="ml-2 mt-3 hidden text-black/30 min-[430px]:block" size={19}/><input value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&search()} placeholder="Search wheat, rice, tomato..." className="min-w-0 flex-1 bg-transparent px-3 text-sm outline-none"/><button onClick={search} className="btn-primary w-full min-[430px]:w-auto">Search</button></div>}
+        <div className="mt-7 grid grid-cols-1 gap-3 min-[430px]:flex min-[430px]:flex-wrap">{isFarmer?<><button onClick={()=>setPage('sell')} className="btn-primary !px-5 !py-3.5"><Plus size={18}/> Add a crop</button><button onClick={()=>setPage('listings')} className="btn-secondary !px-5 !py-3.5">My Listings</button><button onClick={()=>setPage('demand')} className="btn-secondary !px-5 !py-3.5"><BrainCircuit size={17}/> AI Demand</button></>:<><button onClick={()=>setPage('marketplace')} className="btn-primary !px-5 !py-3.5"><ShoppingBag size={18}/> Start shopping</button><button onClick={()=>setPage('orders')} className="btn-secondary !px-5 !py-3.5">My orders</button></>}</div></div>
+        <div className="rounded-[24px] bg-[#1f5a34] p-5 text-white sm:rounded-[30px] shadow-[0_25px_60px_rgba(31,90,52,.18)] sm:p-7"><p className="text-xs font-black uppercase tracking-[.18em] text-white/50">How it works</p><div className="mt-5 space-y-4"><Mini icon={<ShoppingBag/>} title={isFarmer?'List your crop':'Find the crop'} text={isFarmer?'Add crop, price, quantity and location.':'Search and compare available produce.'}/><Mini icon={<ShieldCheck/>} title={isFarmer?'Receive an order':'Place your order'} text={isFarmer?'Buyer chooses quantity and confirms the order.':'Choose quantity and confirm from the product page.'}/><Mini icon={<MessageCircle/>} title="Negotiate only if needed" text="Use chat when either side wants to discuss the price."/></div></div>
+      </div>
+    </section>
+
+    {!isFarmer&&<section className="mx-auto max-w-7xl px-3 py-7 sm:px-5 sm:py-9 lg:px-8"><div className="flex gap-3 overflow-x-auto pb-2">{categories.map(([e,n])=><button key={n} onClick={()=>{localStorage.setItem('kisan-search',n);setPage('marketplace')}} className="flex min-w-[120px] flex-col items-center rounded-2xl border border-black/5 bg-white px-5 py-4 shadow-sm"><span className="text-3xl">{e}</span><b className="mt-2 text-sm">{n}</b></button>)}</div></section>}
+
+    <section className="mx-auto max-w-7xl px-3 py-7 sm:px-5 sm:py-8 lg:px-8"><div className="flex items-end justify-between gap-4"><div><p className="eyebrow">Marketplace</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">{isFarmer?'See what buyers can find':'Popular crops today'}</h2></div><button onClick={()=>setPage('marketplace')} className="text-sm font-black text-[#2f6f3e]">View all →</button></div><div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{featured.map(item=><button onClick={()=>openProduct(item)} key={item.id} className="market-card overflow-hidden text-left"><div className="crop-visual relative aspect-[4/3] min-h-0 overflow-hidden">{item.image?<img src={item.image} alt={item.crop} className="absolute inset-0 h-full w-full object-cover"/>:<span className="text-5xl">{item.emoji}</span>}<span className="relative z-10 ml-auto self-start rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-black">{item.grade}</span></div><div className="p-4"><div className="flex justify-between gap-3"><div><h3 className="font-black">{item.crop}</h3><p className="mt-1 flex items-center gap-1 text-xs text-black/40"><MapPin size={12}/>{item.location}</p></div><b>₹{item.price}/kg</b></div><div className="mt-4 flex justify-between text-xs"><span className="text-black/40">Available</span><b>{item.quantity}</b></div></div></button>)}</div></section>
+  </div>
+}
+function Mini({icon,title,text}){return <div className="flex gap-4 rounded-2xl bg-white/[.07] p-4"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/10 text-[#f1c766]">{React.cloneElement(icon,{size:19})}</span><div><h3 className="font-black">{title}</h3><p className="mt-1 text-xs leading-5 text-white/60">{text}</p></div></div>}
