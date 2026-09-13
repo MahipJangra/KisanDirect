@@ -12,6 +12,7 @@ import Registration from './pages/Registration'
 import DemandInsights from './pages/DemandInsights'
 import { cropListings as demoListings, demoOrders } from './data/mockData'
 import { Sprout, ShoppingBasket, ArrowRight } from 'lucide-react'
+import { LanguageToggle } from './i18n/LanguageProvider'
 
 function useStoredState(key, initialValue) {
   const [value, setValue] = React.useState(() => {
@@ -29,6 +30,7 @@ function useStoredState(key, initialValue) {
 function RoleGate({ onChoose }) {
   return (
     <div className="min-h-screen bg-[#f4f7f1] px-3 py-3 text-[#18311f] sm:grid sm:place-items-center sm:px-5 sm:py-8">
+      <LanguageToggle floating />
       <div className="mx-auto w-full max-w-5xl overflow-hidden rounded-[22px] sm:rounded-[32px] border border-black/5 bg-white shadow-[0_24px_80px_rgba(35,64,45,.12)]">
         <div className="grid lg:grid-cols-[.9fr_1.1fr]">
           <div className="bg-[#1f5a34] p-5 text-white sm:p-10 lg:p-12">
@@ -55,7 +57,7 @@ function RoleGate({ onChoose }) {
                 <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#96681a]">Start buying <ArrowRight size={16}/></span>
               </button>
             </div>
-            <p className="mt-8 text-xs text-black/35">MVP • Prototype data and simulated verification</p>
+            <p className="mt-8 text-xs text-black/35">SIH 2026 MVP • Prototype data and simulated verification</p>
           </div>
         </div>
       </div>
@@ -173,7 +175,10 @@ export default function App() {
 
   if (!role) return <RoleGate onChoose={chooseRole} />
   if (!profile || profile.status !== 'verified') {
-    return <Registration role={role} profile={profile} verifiedPhones={verifiedPhones} onSave={saveProfile} onChangeRole={() => { localStorage.removeItem('kisan-role'); setRole('') }} />
+    return <>
+      <LanguageToggle floating />
+      <Registration role={role} profile={profile} verifiedPhones={verifiedPhones} onSave={saveProfile} onChangeRole={() => { localStorage.removeItem('kisan-role'); setRole('') }} />
+    </>
   }
 
   const pages = {
