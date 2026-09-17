@@ -57,7 +57,7 @@ function RoleGate({ onChoose }) {
                 <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#96681a]">Start buying <ArrowRight size={16}/></span>
               </button>
             </div>
-            <p className="mt-8 text-xs text-black/35">SIH 2026 MVP • Prototype data and simulated verification</p>
+            <p className="mt-8 text-xs text-black/35">MVP • Prototype data and simulated verification</p>
           </div>
         </div>
       </div>
