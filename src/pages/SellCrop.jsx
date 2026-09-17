@@ -44,10 +44,16 @@ export default function SellCrop({ listings, setListings, setPage, editingListin
 
   const change=(k,v)=>setForm(current=>({...current,[k]:v}))
 
-  const handleImage = (file) => {
+  const handleImage = (file, input) => {
     if (!file) return
     if (!file.type.startsWith('image/')) {
       alert('Please choose an image file.')
+      if (input) input.value = ''
+      return
+    }
+    if (file.size >= 1024 * 1024) {
+      alert('Image must be less than 1 MB.')
+      if (input) input.value = ''
       return
     }
     const reader = new FileReader()
@@ -145,10 +151,11 @@ export default function SellCrop({ listings, setListings, setPage, editingListin
           </label>
           <div>
             <span className="field-label">Product photo</span>
-            <input id="crop-photo" type="file" accept="image/*" className="hidden" onChange={e=>handleImage(e.target.files?.[0])}/>
+            <input id="crop-photo" type="file" accept="image/*" className="hidden" onChange={e=>handleImage(e.target.files?.[0], e.target)}/>
             <label htmlFor="crop-photo" className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-black/15 bg-[#fafbf8] px-4 py-3 text-sm font-bold text-black/45 hover:border-[#3b7a48]/40 hover:text-[#2f6f3e]">
               <ImagePlus size={17}/> {form.image ? 'Change photo' : 'Add photo'}
             </label>
+            <p className="mt-1.5 text-xs text-black/40">Maximum 1 MB per image</p>
             {form.image && <div className="mt-3 overflow-hidden rounded-2xl border border-black/5 bg-[#f6f7f2]"><img src={form.image} alt="Crop preview" className="h-36 w-full object-cover"/><div className="flex items-center justify-between px-3 py-2"><span className="text-xs font-bold text-[#2f6f3e]">Photo ready</span><button type="button" onClick={()=>change('image','')} className="text-xs font-bold text-red-500">Remove</button></div></div>}
           </div>
           <label className="sm:col-span-2">
